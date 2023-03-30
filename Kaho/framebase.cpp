@@ -68,7 +68,7 @@ LRESULT Frame::wndF(UINT msg, WPARAM wParam, LPARAM lParam) {
 			if (instanceof<kaho::Actable>(vcomp[i])) {
 				kaho::Actable* ct = dynamic_cast<kaho::Actable*>(vcomp[i]);
 				if (ct->hCode() == (HMENU) LOWORD(wParam)) {
-					ct->act(lParam);
+					ct->act(lParam, this->mHwnd);
 				}
 			}
 		}

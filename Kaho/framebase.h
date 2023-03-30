@@ -51,4 +51,5 @@ protected:
 	LPCWSTR cName;
 	HINSTANCE inst;
 };
+
 extern std::map<HWND, Frame*> LINKER;
