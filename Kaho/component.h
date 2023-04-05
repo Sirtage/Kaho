@@ -2,12 +2,14 @@
 #include <Windows.h>
 #include "framebase.h"
 #include <functional>
+#include <CommCtrl.h>
+#include <objbase.h>
 
 #include "htc.h"
 
 namespace kaho {
 	extern enum e_component_type : UINT {
-		unid, button, text, edit
+		unid, button, text, edit, combo
 	};
 
 	__interface IComponent
@@ -86,7 +88,7 @@ namespace kaho {
 		}
 		Text() {};
 		LPCWSTR cClass() override { return L"static"; }
-		e_component_type eType() override { return e_component_type::button; }
+		e_component_type eType() override { return e_component_type::text; }
 		BOOL reg(HWND* pHwnd) override {
 			auto atv = CreateWindow(this->cClass(), this->inner, WS_CHILD | WS_VISIBLE | this->wsStyle, this->x, this->y, this->w, this->h, *pHwnd, NULL, NULL, &this->longPrs);
 			return atv != nullptr;
@@ -105,6 +107,32 @@ namespace kaho {
 		BOOL reg(HWND* pHwnd) override {
 			auto atv = CreateWindow(this->cClass(), this->lDef, WS_CHILD | WS_VISIBLE | this->wsStyle, this->x, this->y, this->w, this->h, *pHwnd, this->hCode(), NULL, &this->longPrs);
 			return atv != nullptr;
+		}
+	};
+
+	class ComboBox : public IComponent, public Positioned, public Styled {
+	public:
+		LONG drop = CBN_DROPDOWN;
+		HWND subHwnd;
+
+		ComboBox() {}
+		LPCWSTR cClass() override { return WC_COMBOBOX; }
+		e_component_type eType() override { return e_component_type::combo; }
+		std::vector<LPCWSTR> boxPth = std::vector<LPCWSTR>(0);
+		VOID add(LPCWSTR box) {
+			this->boxPth.push_back(box);
+		}
+		BOOL reg(HWND* pHwnd) override {
+			this->subHwnd = CreateWindow(this->cClass(), NULL, WS_CHILD | WS_VISIBLE | this->wsStyle | this->drop, this->x, this->y, this->w, this->h, *pHwnd, NULL, NULL, &this->longPrs);
+			if (subHwnd != nullptr) {
+				for (LPCWSTR bp : this->boxPth) {
+					SendMessage(this->subHwnd, CB_ADDSTRING, 0, (LPARAM)bp);
+				}
+				return TRUE;
+			}
+			else {
+				return FALSE;
+			}
 		}
 	};
 }

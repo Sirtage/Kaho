@@ -24,7 +24,8 @@ public:
 	static Frame* lastF;
 
 	e_frame_type type;
-
+	
+	std::vector<Frame*> frames;
 	VIC vcomp;
 
 	ABTF fInf;

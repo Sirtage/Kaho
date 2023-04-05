@@ -12,5 +12,6 @@
 #define Text kaho::Text
 #define Edit kaho::Editfield
 #define Editfield kaho::Editfield
+#define ComboBox kaho::ComboBox
 
 namespace kaho {}
